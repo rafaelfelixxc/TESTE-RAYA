@@ -1,5 +1,6 @@
 export default {
   async fetch(request, env) {
+
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
@@ -13,22 +14,18 @@ export default {
     try {
       const body = await request.json();
 
-      const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, // <--- ADICIONE ESTA VÍRGULA
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [{ text: body.prompt || "Responda apenas: OK" }]
-        }
-      ]
-    })
-  }
-);
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.GROQ_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "llama3-8b-8192",
+          messages: body.messages
+        })
+      });
+
       const data = await response.json();
 
       return new Response(JSON.stringify(data), {
@@ -40,11 +37,7 @@ export default {
 
     } catch (err) {
       return new Response(JSON.stringify({ error: err.message }), {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        }
+        status: 500
       });
     }
   }
