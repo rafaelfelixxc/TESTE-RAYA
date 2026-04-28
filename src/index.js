@@ -14,16 +14,14 @@ export default {
     try {
       const body = await request.json();
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
-          "x-api-key": env.ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
+          "Authorization": `Bearer ${env.OPENAI_API_KEY}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "claude-3-haiku-20240307",
-          max_tokens: 1000,
+          model: "gpt-4o-mini",
           messages: body.messages
         })
       });
