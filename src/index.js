@@ -29,7 +29,6 @@ export default {
     })
   }
 );
-
       const data = await response.json();
 
       return new Response(JSON.stringify(data), {
